@@ -1,0 +1,20 @@
+{
+  "name": "js-unit-testing-task",
+  "version": "1.0.0",
+  "description": "Задание по модульному тестированию",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kmisha/js-unit-testing-task.git"
+  },
+  "keywords": ["javascript", "karma", "unit tests", "jasmine", "istambul"],
+  "author": "Kolesnikov M.I.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kmisha/js-unit-testing-task/issues"
+  },
+  "homepage": "https://github.com/kmisha/js-unit-testing-task#readme"
+}
