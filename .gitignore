@@ -105,3 +105,6 @@ dist
 
 # IDEA
 .idea
+
+# lock-files
+*-lock.json

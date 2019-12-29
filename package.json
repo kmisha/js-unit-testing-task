@@ -4,17 +4,30 @@
   "description": "Задание по модульному тестированию",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kmisha/js-unit-testing-task.git"
   },
-  "keywords": ["javascript", "karma", "unit tests", "jasmine", "istambul"],
+  "keywords": [
+    "javascript",
+    "karma",
+    "unit tests",
+    "jasmine",
+    "istambul"
+  ],
   "author": "Kolesnikov M.I.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kmisha/js-unit-testing-task/issues"
   },
-  "homepage": "https://github.com/kmisha/js-unit-testing-task#readme"
+  "homepage": "https://github.com/kmisha/js-unit-testing-task#readme",
+  "devDependencies": {
+    "jasmine-core": "^3.5.0",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.1",
+    "karma-jasmine": "^2.0.1"
+  }
 }
