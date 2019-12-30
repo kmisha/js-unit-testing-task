@@ -1,11 +1,14 @@
 {
   "name": "js-unit-testing-task",
   "version": "1.0.0",
-  "description": "Задание по модульному тестированию",
+  "description": "Task about unit testing",
   "main": "index.js",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "build": "npx webpack --mode=production",
+    "watch": "npx webpack --watch --mode=development"
   },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kmisha/js-unit-testing-task.git"
@@ -24,10 +27,21 @@
   },
   "homepage": "https://github.com/kmisha/js-unit-testing-task#readme",
   "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "babel-loader": "^8.0.6",
     "jasmine-core": "^3.5.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.1",
-    "karma-jasmine": "^2.0.1"
+    "karma-jasmine": "^2.0.1",
+    "normalize.css": "^8.0.1",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ]
   }
 }

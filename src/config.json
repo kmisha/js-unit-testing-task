@@ -1,0 +1,12 @@
+{
+    "proto"    : "https",
+    "url"      : "randomuser.me/api/?",
+    "params"   : {
+        "results"  : "50",
+        "format"   : "json",
+        "nat"      : "us",
+        "gender"   : "",
+        "password" : "",
+        "inc"      : "gender,name,location,email,phone,picture"
+    }
+}

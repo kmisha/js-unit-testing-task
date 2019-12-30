@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+        <title>EPAM Frontend Lab</title>
+        <meta charset="UTF-8">
+        <meta name="keywords" content="HTML,CSS,JavaScript">
+        <meta name="description" content="EPAM Frontend Lab">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=cyrillic" rel="stylesheet">
+        <link href="node_modules/normalize.css/normalize.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <header><h1>EPAM Frontend Lab</h1></header>
+        <nav>
+            <ul class="menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Tasks</a></li>
+                <li><a href="#">Students</a></li>
+                <li><a href="#">Trainers</a></li>
+            </ul>
+        </nav>
+        <main class="person-list-container">
+            <header class="controls">
+                <select class="sorting">
+                    <option value="normal" selected>Down</option>
+                    <option value="reverse">Up</option>
+                </select>
+            </header>
+            <section class="person-list">
+                <ul class="view-list">
+                </ul>
+            </section>
+            <section class="modal-overlay hidden">
+                <article class="full-info hidden"></article>
+            </section>
+            <footer class="pegination">
+                <ul class="ranges"></ul>
+                <ul class="pages"></ul>
+            </footer>
+        </main>
+        <footer>EPAM</footer>
+        <script src="lib/index.js"></script>
+    </body>
+</html>
