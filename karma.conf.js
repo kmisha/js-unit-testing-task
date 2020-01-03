@@ -29,9 +29,9 @@ module.exports = config => {
       mode: 'development',
       devtool: 'source-map'
     },
-    reporters: ['progress', 'coverage-istanbul'],
-    coverageReporter: {
-      type : 'html',
+    reporters: ['coverage-istanbul'],
+    coverageIstanbulReporter: {
+      type : 'lcovonly',
       dir : 'coverage/'
     },
     port: 9876,
