@@ -3,7 +3,7 @@ import {buildUrl} from '../utils';
 export default class PersonList {
 
     constructor(config, view) {
-        this.url = buildUrl(config);
+        this.url = buildUrl(config.proto, config.url, config.params);
         this.view = view;
         this.personList = [];
     }

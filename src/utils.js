@@ -1,9 +1,23 @@
+const isObject = obj => !!obj && obj.constructor === Object;
+
 // Make URI from config for request
-export const buildUrl = config => {
-    let result = `${config.proto}://${config.url}`;
-    for(let key in config.params) {
-        result += `${key}=${config.params[key]}&`;
+export const buildUrl = (proto, url, params = {}) => {
+    if (!proto) {
+        throw new TypeError('Protocol is required')
     }
-    // return URI without last &
-    return result.slice(0,result.length - 1);
+    if (!url) {
+        throw new TypeError('Url is required')
+    }
+    if (!isObject(params)) {
+        throw new TypeError('params should be object')
+    }
+
+    const result = `${proto}://${url}`;
+    let paramsArray = [];
+
+    for (let key in params) {
+        paramsArray = [...paramsArray, `${key}=${params[key]}`];
+    }
+
+    return result + paramsArray.join('&');
 };
