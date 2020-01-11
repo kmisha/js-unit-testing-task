@@ -31,6 +31,7 @@
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.6",
     "istanbul-instrumenter-loader": "^3.0.1",
+    "jasmine-ajax": "^4.0.0",
     "jasmine-core": "^3.5.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -47,5 +48,6 @@
     "presets": [
       "@babel/env"
     ]
-  }
+  },
+  "dependencies": {}
 }

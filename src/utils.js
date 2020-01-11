@@ -5,9 +5,11 @@ export const buildUrl = (proto, url, params = {}) => {
     if (!proto) {
         throw new TypeError('Protocol is required')
     }
+
     if (!url) {
         throw new TypeError('Url is required')
     }
+
     if (!isObject(params)) {
         throw new TypeError('params should be object')
     }

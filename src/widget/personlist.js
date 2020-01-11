@@ -23,23 +23,20 @@ export default class PersonList {
             xhr.open('GET',this.url, true);
             xhr.responseType = 'json';
 
-            xhr.onreadystatechange = () => {
-                if(xhr.readyState !== 4) return;
-                if(xhr.status !== 200) {
-                    console.log(`${xhr.status}: ${xhr.statusText}`);
-                } else {
+            xhr.onloadend = () => {
+                if (xhr.status === 200) {
                     resolve(xhr.response.results);
+                } else {
+                    reject(xhr.status);
                 }
             };
             xhr.ontimeout = () => {
-                console.log( 'Извините, запрос превысил максимальное время' );
                 // TODO update view
                 reject('timeout');
             };
-            xhr.onerror = (error) => {
-                console.log(`Error: ${error}`);
+            xhr.onerror = () => {
                 // TODO update view
-                reject(error);
+                reject('error');
             };
             xhr.send();
         });
