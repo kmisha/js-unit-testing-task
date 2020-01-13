@@ -111,18 +111,18 @@ describe('PersonList method getPersons', () => {
 
     it('should return correct list of persons', () => {
         person.personList = [
-            { name: 'Person1'},
-            { name: 'Person2'},
-            { name: 'Person3'},
-            { name: 'Person4'},
-            { name: 'Person5'},
+            {name: 'Person1'},
+            {name: 'Person2'},
+            {name: 'Person3'},
+            {name: 'Person4'},
+            {name: 'Person5'},
         ];
         const expected = [
-            { name: 'Person2'},
-            { name: 'Person3'},
+            {name: 'Person2'},
+            {name: 'Person3'},
         ];
 
-        expect(person.getPersons(2,4)).toEqual(expected);
+        expect(person.getPersons(2, 4)).toEqual(expected);
     })
 });
 
@@ -139,21 +139,92 @@ describe('PersonList method reverse', () => {
 
     it('should reverse', () => {
         person.personList = [
-            { name: 'Person1'},
-            { name: 'Person2'},
-            { name: 'Person3'},
-            { name: 'Person4'},
-            { name: 'Person5'},
+            {name: 'Person1'},
+            {name: 'Person2'},
+            {name: 'Person3'},
+            {name: 'Person4'},
+            {name: 'Person5'},
         ];
         const expected = [
-            { name: 'Person5'},
-            { name: 'Person4'},
-            { name: 'Person3'},
-            { name: 'Person2'},
-            { name: 'Person1'},
+            {name: 'Person5'},
+            {name: 'Person4'},
+            {name: 'Person3'},
+            {name: 'Person2'},
+            {name: 'Person1'},
         ];
 
         person.reverse();
+
+        expect(person.personList).toEqual(expected);
+    })
+});
+
+describe('PersonList method reverse', () => {
+    let config = {
+        proto: 'http',
+        url: 'yandex.ru'
+    };
+    let person;
+
+    beforeEach(() => {
+        person = new PersonList(config, {});
+    });
+
+    it('should reverse', () => {
+        person.personList = [
+            {
+                name: {
+                    first: 'Person4',
+                    last: 'Last name 1'
+                }
+            },
+            {
+                name: {
+                    first: 'Person3',
+                    last: 'Last name 2'
+                }
+            },
+            {
+                name: {
+                    first: 'Person2',
+                    last: 'Last name 3'
+                }
+            },
+            {
+                name: {
+                    first: 'Person1',
+                    last: 'Last name 4'
+                }
+            },
+        ];
+        const expected = [
+            {
+                name: {
+                    first: 'Person1',
+                    last: 'Last name 4'
+                }
+            },
+            {
+                name: {
+                    first: 'Person2',
+                    last: 'Last name 3'
+                }
+            },
+            {
+                name: {
+                    first: 'Person3',
+                    last: 'Last name 2'
+                }
+            },
+            {
+                name: {
+                    first: 'Person4',
+                    last: 'Last name 1'
+                }
+            },
+        ];
+
+        person.sort();
 
         expect(person.personList).toEqual(expected);
     })
