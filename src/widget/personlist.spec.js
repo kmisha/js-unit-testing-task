@@ -125,3 +125,36 @@ describe('PersonList method getPersons', () => {
         expect(person.getPersons(2,4)).toEqual(expected);
     })
 });
+
+describe('PersonList method reverse', () => {
+    let config = {
+        proto: 'http',
+        url: 'yandex.ru'
+    };
+    let person;
+
+    beforeEach(() => {
+        person = new PersonList(config, {});
+    });
+
+    it('should reverse', () => {
+        person.personList = [
+            { name: 'Person1'},
+            { name: 'Person2'},
+            { name: 'Person3'},
+            { name: 'Person4'},
+            { name: 'Person5'},
+        ];
+        const expected = [
+            { name: 'Person5'},
+            { name: 'Person4'},
+            { name: 'Person3'},
+            { name: 'Person2'},
+            { name: 'Person1'},
+        ];
+
+        person.reverse();
+
+        expect(person.personList).toEqual(expected);
+    })
+});
