@@ -7,13 +7,13 @@ import PersonView from './personview.js';
 export default class PersonWidget{
     constructor(config, container, ranges) {
         this.view = new PersonView(container);
-        this.list = new PersonList(config, this.view);
+        this.list = new PersonList(config);
         this.list.updateData()
             .then( result => {
                 this.list.personList = result;
                 this.list.sort();
                 this.setRanges(ranges);
-                this.list.update();
+                this.update();
                 this.view.sortSelector.addEventListener('change',(event) => this.sort(event));
             })
             .catch( error => {
@@ -22,8 +22,12 @@ export default class PersonWidget{
             });
     }
     // update view
-    update() {
-        this.list.update();
+    update(page) {
+        const first = page * this.list.range,
+            last = first + this.list.range;
+        const users = this.list.getPersons(first, last);
+        console.log('users is ', users);
+        this.view.showList(users);
     }
     // select list sorting
     sort(event) {
@@ -44,13 +48,13 @@ export default class PersonWidget{
     setRangeEvent(range, event) {
         this.list.range = range;
         this.view.setRangeActive(event.currentTarget);
-        this.list.page  = this.view.showPages(this.calcPages(), this);
-        this.list.update();
+        this.list.page = this.view.showPages(this.calcPages(), this);
+        this.update(this.list.page, range);
     }
     setPageEvent(page, event) {
         this.list.page = page;
         this.view.setPageActive(event.currentTarget);
-        this.list.update();
+        this.update();
     }
     calcPages() {
         const personCount = this.list.personList.length,

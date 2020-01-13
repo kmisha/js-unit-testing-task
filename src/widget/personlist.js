@@ -2,9 +2,8 @@ import {buildUrl} from '../utils';
 
 export default class PersonList {
 
-    constructor(config, view) {
+    constructor(config) {
         this.url = buildUrl(config.proto, config.url, config.params);
-        this.view = view;
         this.personList = [];
     }
     sort() {
@@ -41,10 +40,9 @@ export default class PersonList {
             xhr.send();
         });
     }
-    update() {
-        // Calc count pages
-        const start = this.page * this.range,
-              end   = start + this.range;
-        this.view.showList(this.personList.slice(start, end));
+
+
+    getPersons(from, to) {
+        return this.personList.slice(from - 1, to - 1);
     }
 }
