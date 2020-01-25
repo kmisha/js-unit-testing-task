@@ -6,6 +6,7 @@ export default class PersonList {
         this.url = buildUrl(config.proto, config.url, config.params);
         this.personList = [];
     }
+
     sort() {
         this.personList.sort( (person_a, person_b) => {
             const name_a = `${person_a.name.first} ${person_a.name.last}`;
@@ -13,9 +14,11 @@ export default class PersonList {
             return name_a.localeCompare(name_b);
         });
     }
+
     reverse() {
         this.personList.reverse();
     }
+
     updateData() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -40,7 +43,6 @@ export default class PersonList {
             xhr.send();
         });
     }
-
 
     getPersons(from, to) {
         return this.personList.slice(from - 1, to - 1);
