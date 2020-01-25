@@ -1,6 +1,6 @@
-import {buildUrl} from '../utils';
+import {buildUrl} from '../utils.js';
 
-export default class PersonList {
+export default class Model {
 
     constructor(config) {
         this.url = buildUrl(config.proto, config.url, config.params);
@@ -44,7 +44,16 @@ export default class PersonList {
         });
     }
 
-    getPersons(from, to) {
-        return this.personList.slice(from - 1, to - 1);
+    async getPersons(from, to, callback) {
+        try {
+            if (!this.personList.length) {
+                this.personList = await this.updateData()
+            }
+
+            callback(false, this.personList.slice(from - 1, to - 1))
+        } catch (error) {
+            callback(error, [])
+        }
+
     }
 }

@@ -1,29 +1,25 @@
-import PersonList from './personlist';
-import 'jasmine-ajax';
+import Model from './model.js';
 
-describe('PersonList', () => {
+describe('Model', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
-    };
-    let person;
+    }, person
 
     beforeEach(() => {
-        person = new PersonList(config, {});
-    });
-
-    it('should create a object', () => {
-        expect(person).not.toBeUndefined();
-        expect(person).not.toBeNull();
+        person = new Model(config)
     });
 
     it('should have a personList property', () => {
-        expect(person.personList).toBeDefined();
-        expect(person.personList).toEqual([]);
+        expect(person.personList).toEqual([])
     });
+
+    it('should has correct url property', () => {
+        expect(person.url).toMatch(/\w{4}:\/\/\w+\.\w{2}/)
+    })
 });
 
-describe('PersonList method updateData', () => {
+describe('Model method updateData', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
@@ -31,7 +27,7 @@ describe('PersonList method updateData', () => {
     let person;
 
     beforeEach(() => {
-        person = new PersonList(config, {});
+        person = new Model(config, {});
         jasmine.Ajax.install();
         jasmine.clock().install();
     });
@@ -98,19 +94,27 @@ describe('PersonList method updateData', () => {
     })
 });
 
-describe('PersonList method getPersons', () => {
+describe('method getPersons', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
-    };
-    let person;
+    }, model, callback, errorSpy
 
     beforeEach(() => {
-        person = new PersonList(config, {});
+        model = new Model(config)
+        callback = jasmine.createSpy('callback')
+        errorSpy = jasmine.createSpy('rejected event')
+        jasmine.Ajax.install()
+        model.personList = [];
     });
 
-    it('should return correct list of persons', () => {
-        person.personList = [
+    afterEach(() => {
+        jasmine.Ajax.uninstall()
+    });
+
+
+    it('should call callback with correct data', async () => {
+        model.personList = [
             {name: 'Person1'},
             {name: 'Person2'},
             {name: 'Person3'},
@@ -122,11 +126,51 @@ describe('PersonList method getPersons', () => {
             {name: 'Person3'},
         ];
 
-        expect(person.getPersons(2, 4)).toEqual(expected);
+        await model.getPersons(2, 4, callback)
+
+        expect(callback).toHaveBeenCalledWith(false, expected)
+    })
+
+    it('should call callback with correct data also if model list is empty', (done) => {
+        const expected = [
+            {name: 'Person2'},
+            {name: 'Person3'},
+        ]
+
+        model.getPersons(2, 4, callback)
+            .then(() => expect(callback).toHaveBeenCalledWith(false, expected))
+            .catch(errorSpy)
+            .finally(() => {
+                expect(errorSpy).not.toHaveBeenCalled()
+                done()
+            })
+
+        jasmine.Ajax.requests.mostRecent().respondWith({
+            status: 200,
+            response: {
+                results: [
+                    {name: 'Person1'},
+                    {name: 'Person2'},
+                    {name: 'Person3'},
+                    {name: 'Person4'},
+                    {name: 'Person5'},
+                ]
+            }
+        });
+    })
+
+    it('should call callback with [] if we have problems with network', (done) => {
+        model.getPersons(2, 4, callback)
+            .then(() => done())
+            .finally(() => {
+            expect(callback).toHaveBeenCalledWith('error', []);
+        })
+
+        jasmine.Ajax.requests.mostRecent().responseError('error')
     })
 });
 
-describe('PersonList method reverse', () => {
+xdescribe('Model method reverse', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
@@ -134,7 +178,7 @@ describe('PersonList method reverse', () => {
     let person;
 
     beforeEach(() => {
-        person = new PersonList(config, {});
+        person = new Model(config, {});
     });
 
     it('should reverse', () => {
@@ -159,7 +203,7 @@ describe('PersonList method reverse', () => {
     })
 });
 
-describe('PersonList method reverse', () => {
+xdescribe('Model method reverse', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
@@ -167,7 +211,7 @@ describe('PersonList method reverse', () => {
     let person;
 
     beforeEach(() => {
-        person = new PersonList(config, {});
+        person = new Model(config, {});
     });
 
     it('should reverse', () => {

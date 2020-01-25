@@ -35,7 +35,7 @@ function addElement(container, element, attr, content) {
     return elm;
 }
 
-export default class PersonView {
+export default class View {
     // click event
     static get CLICK() {
         return 'click';
@@ -51,7 +51,7 @@ export default class PersonView {
         return 'hidden';
     }
 
-    constructor(container) {
+    constructor(container, controller) {
         this.container = container;
         this.sortSelector = container.querySelector('.sorting');
         this.viewList = container.querySelector('.view-list');
@@ -59,6 +59,10 @@ export default class PersonView {
         this.pages = container.querySelector('.pages');
         this.modalOverlay = container.querySelector('.modal-overlay');
         this.modal = container.querySelector('.full-info');
+    }
+
+    init() {
+        this.controller.showList(from, to, list => this.showList(list));
     }
 
     showList(personList) {
@@ -77,7 +81,7 @@ export default class PersonView {
             li.appendChild(img);
             li.appendChild(pName);
 
-            li.addEventListener(PersonView.CLICK, (event) => this.showFullInfo(person, event));
+            li.addEventListener(View.CLICK, (event) => this.showFullInfo(person, event));
 
             this.viewList.appendChild(li);
         });
@@ -88,11 +92,11 @@ export default class PersonView {
             const li = document.createElement('li'),
                 a = document.createElement('a');
             if (!index) {
-                a.classList.add(PersonView.ACTIVE);
+                a.classList.add(View.ACTIVE);
                 this.activeRange = a;
             }
             a.innerText = range;
-            a.addEventListener(PersonView.CLICK, event => controller.setRangeEvent(range, event));
+            a.addEventListener(View.CLICK, event => controller.setRangeEvent(range, event));
             li.appendChild(a);
             this.ranges.appendChild(li);
         });
@@ -101,9 +105,9 @@ export default class PersonView {
     }
 
     setRangeActive(element) {
-        this.activeRange.classList.remove(PersonView.ACTIVE);
+        this.activeRange.classList.remove(View.ACTIVE);
         this.activeRange = element;
-        this.activeRange.classList.add(PersonView.ACTIVE);
+        this.activeRange.classList.add(View.ACTIVE);
     }
 
     showPages(pageCount, controller) {
@@ -116,11 +120,11 @@ export default class PersonView {
             const li = document.createElement('li'),
                 a = document.createElement('a');
             if (i === 0) {
-                a.classList.add(PersonView.ACTIVE);
+                a.classList.add(View.ACTIVE);
                 this.activePage = a;
             }
             a.innerText = i + 1;
-            a.addEventListener(PersonView.CLICK, event => controller.setPageEvent(i, event));
+            a.addEventListener(View.CLICK, event => controller.setPageEvent(i, event));
             li.appendChild(a);
             this.pages.appendChild(li);
         }
@@ -129,16 +133,16 @@ export default class PersonView {
     }
 
     setPageActive(element) {
-        this.activePage.classList.remove(PersonView.ACTIVE);
+        this.activePage.classList.remove(View.ACTIVE);
         this.activePage = element;
-        this.activePage.classList.add(PersonView.ACTIVE);
+        this.activePage.classList.add(View.ACTIVE);
     }
 
     // modal view
     showFullInfo(person) {
         const over = this.modalOverlay;
-        over.classList.remove(PersonView.HIDDEN);
-        over.addEventListener(PersonView.CLICK, () => over.classList.add(PersonView.HIDDEN));
+        over.classList.remove(View.HIDDEN);
+        over.addEventListener(View.CLICK, () => over.classList.add(View.HIDDEN));
         // show modal window
         const modal = this.modal;
 
@@ -146,7 +150,7 @@ export default class PersonView {
             removeChildren(this.modal);
         }
 
-        modal.classList.remove(PersonView.HIDDEN);
+        modal.classList.remove(View.HIDDEN);
         addElement(modal, 'img', {src: person.picture.large, alt: `${person.name.first} ${person.name.last}`});
         const div = addElement(modal, 'div', {});
         addElement(div, 'p', {}, `Street: ${parseAddress(person.location.street)}`);

@@ -1,4 +1,4 @@
-import {buildUrl} from './utils';
+import {buildUrl} from './utils.js';
 
 describe('buildUrl', () => {
     it('should construct correct string from correct config object', () => {

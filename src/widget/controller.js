@@ -1,4 +1,4 @@
-export default class PersonWidget{
+export default class Controller{
     constructor(view, list) {
         this.view = view;
         this.list = list;
@@ -61,5 +61,9 @@ export default class PersonWidget{
                 this.list.personList = [];
                 // TODO Show Error
             });
+    }
+
+    showList(from, to, callback) {
+        this.model.showList(from, to, callback);
     }
 }
