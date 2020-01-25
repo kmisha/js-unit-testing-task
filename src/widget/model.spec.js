@@ -4,18 +4,18 @@ describe('Model', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
-    }, person
+    }, model
 
     beforeEach(() => {
-        person = new Model(config)
-    });
+        model = new Model(config)
+    })
 
     it('should have a personList property', () => {
-        expect(person.personList).toEqual([])
-    });
+        expect(model.personList).toEqual([])
+    })
 
     it('should has correct url property', () => {
-        expect(person.url).toMatch(/\w{4}:\/\/\w+\.\w{2}/)
+        expect(model.url).toMatch(/\w{4}:\/\/\w+\.\w{2}/)
     })
 });
 
@@ -23,69 +23,62 @@ describe('Model method updateData', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
-    };
-    let person;
+    }, model, thenSpy
 
     beforeEach(() => {
-        person = new Model(config, {});
-        jasmine.Ajax.install();
-        jasmine.clock().install();
-    });
+        model = new Model(config)
+        jasmine.Ajax.install()
+        jasmine.clock().install()
+        thenSpy = jasmine.createSpy('spy')
+    })
 
     afterEach(() => {
-        jasmine.Ajax.uninstall();
-        jasmine.clock().uninstall();
-    });
+        jasmine.Ajax.uninstall()
+        jasmine.clock().uninstall()
+    })
 
     it('should make request with correct URL and get some response', done => {
-        person.updateData().finally(done);
-        expect(jasmine.Ajax.requests.mostRecent().url).toBe('http://yandex.ru');
+        model.updateData().finally(done)
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('http://yandex.ru')
         jasmine.Ajax.requests.mostRecent().respondWith({
             status: 200,
             responseText: 'success'
         })
-    });
+    })
 
-    it('should return promise in rejected state with empty object if request encountered an error', (done) => {
-        const thenSpy = jasmine.createSpy('spy');
-
-        person.updateData()
+    it('should return promise in rejected state with empty object if request encountered an error', done => {
+        model.updateData()
             .then(thenSpy)
             .catch(error => expect(error).toEqual('error'))
             .finally(() => {
-                expect(thenSpy).not.toHaveBeenCalled();
-                done();
-            });
+                expect(thenSpy).not.toHaveBeenCalled()
+                done()
+            })
 
-        jasmine.Ajax.requests.mostRecent().responseError();
+        jasmine.Ajax.requests.mostRecent().responseError()
     });
 
-    it('should return promise in rejected state with empty object if request returns timout error', (done) => {
-        const thenSpy = jasmine.createSpy('spy');
-
-        person.updateData()
+    it('should return promise in rejected state with empty object if request returns timout error', done => {
+        model.updateData()
             .then(thenSpy)
             .catch(msg => expect(msg).toEqual('timeout'))
             .finally(() => {
-                expect(thenSpy).not.toHaveBeenCalled();
-                done();
-            });
+                expect(thenSpy).not.toHaveBeenCalled()
+                done()
+            })
 
-        jasmine.Ajax.requests.mostRecent().responseTimeout();
+        jasmine.Ajax.requests.mostRecent().responseTimeout()
     });
 
     it('should return promise in rejected state with empty object if request returns not 200 status code', (done) => {
-        const thenSpy = jasmine.createSpy('spy');
-
-        person.updateData()
+        model.updateData()
             .then(thenSpy)
-            .catch(msg => {
-                expect(msg).toEqual(404);
-            })
+            .catch(msg => expect(msg).toEqual(404))
             .finally(() => {
-                expect(thenSpy).not.toHaveBeenCalled();
-                done();
-            });
+                expect(thenSpy).not.toHaveBeenCalled()
+                done()
+            })
 
         jasmine.Ajax.requests.mostRecent().respondWith({
             status: 404,
@@ -94,7 +87,7 @@ describe('Model method updateData', () => {
     })
 });
 
-describe('method getPersons', () => {
+describe('Model method getPersons', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
@@ -105,7 +98,6 @@ describe('method getPersons', () => {
         callback = jasmine.createSpy('callback')
         errorSpy = jasmine.createSpy('rejected event')
         jasmine.Ajax.install()
-        model.personList = [];
     });
 
     afterEach(() => {
@@ -120,11 +112,11 @@ describe('method getPersons', () => {
             {name: 'Person3'},
             {name: 'Person4'},
             {name: 'Person5'},
-        ];
+        ]
         const expected = [
             {name: 'Person2'},
             {name: 'Person3'},
-        ];
+        ]
 
         await model.getPersons(2, 4, callback)
 
@@ -167,6 +159,21 @@ describe('method getPersons', () => {
         })
 
         jasmine.Ajax.requests.mostRecent().responseError('error')
+    })
+
+    it('should call callback with [] from or to params is incorrect', async () => {
+        model.personList = [{a: 1}]
+        await model.getPersons(-2, 4, callback)
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+
+        await model.getPersons(2, -4, callback)
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+
+        await model.getPersons(10, 4, callback)
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+
+        await model.getPersons(1, 1, callback)
+        expect(callback).toHaveBeenCalledWith(false, [])
     })
 });
 

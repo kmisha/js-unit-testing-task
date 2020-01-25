@@ -46,6 +46,11 @@ export default class Model {
 
     async getPersons(from, to, callback) {
         try {
+
+            if (from < 1 || to < 1 || to < from) {
+                callback(new TypeError('from and to should be more than 1 and to < from'), [])
+            }
+
             if (!this.personList.length) {
                 this.personList = await this.updateData()
             }
