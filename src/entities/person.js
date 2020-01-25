@@ -1,3 +1,3 @@
-export class Person {
-    name = { first: '', last: ''};
-}
+// export class Person {
+    // name = { first: '', last: ''};
+// }

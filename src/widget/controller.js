@@ -63,7 +63,7 @@ export default class Controller{
             });
     }
 
-    showList(from, to, callback) {
-        this.model.showList(from, to, callback);
+    async showList(from, to, callback) {
+        await this.model.showList(from, to, callback);
     }
 }

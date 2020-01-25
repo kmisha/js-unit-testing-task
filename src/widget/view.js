@@ -59,10 +59,11 @@ export default class View {
         this.pages = container.querySelector('.pages');
         this.modalOverlay = container.querySelector('.modal-overlay');
         this.modal = container.querySelector('.full-info');
+        this.controller = controller;
     }
 
-    init() {
-        this.controller.showList(from, to, list => this.showList(list));
+    async init() {
+        await this.controller.showList(from, to, list => this.showList(list));
     }
 
     showList(personList) {

@@ -1,3 +1,4 @@
+const path = require('path')
 module.exports = config => {
   config.set({
     basePath: '',
@@ -7,8 +8,13 @@ module.exports = config => {
         'node_modules/jasmine-ajax/lib/mock-ajax.js'
     ],
     exclude: [],
-    preprocessors: {},
-    reporters: ['progress'],
+    preprocessors: {
+      'src/**/*.js': ['karma-coverage-istanbul-instrumenter']
+    },
+    reporters: ['progress', 'coverage-istanbul'],
+    coverageIstanbulInstrumenter: {
+      esModules: true
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -16,17 +22,9 @@ module.exports = config => {
     browsers: ['Chrome'],
     singleRun: true,
     concurrency: Infinity,
-    client: {
-      jasmine: {
-        random: true,
-        seed: '4321',
-        oneFailurePerSpec: true,
-        failFast: true,
-        timeoutInterval: 1000,
-        helpers: [
-          'node_modules/jasmine-ajax/lib/mack-ajax.js'
-        ]
-      }
+    coverageIstanbulReporter: {
+      reports: ['lcov'],
+      dir: path.join(__dirname, 'coverage'),
     }
   })
-};
+}
