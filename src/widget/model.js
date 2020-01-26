@@ -3,8 +3,11 @@ import {buildUrl} from '../utils.js';
 export default class Model {
 
     constructor(config) {
-        this.url = buildUrl(config.proto, config.url, config.params);
-        this.personList = [];
+        this.url = buildUrl(config.proto, config.url, config.params)
+        this.personList = []
+        this.ranges = config.ranges
+        this.activePage = 1
+        this.activeRange = this.ranges[0]
     }
 
     sort() {
@@ -44,23 +47,45 @@ export default class Model {
         });
     }
 
-    async getPersons(from, to, callback) {
+    async getPersons(callback) {
 
         try {
 
-            if (from < 1 || to < 1 || to < from) {
-                callback(new TypeError('from and to should be more than 1 and to < from'), [], 0)
-            }
-
             if (!this.personList.length) {
                 this.personList = await this.updateData()
+                this.pages = this.calcPages_(this.personList.length, this.activeRange)
                 this.sort()
             }
 
-            callback(false, this.personList.slice(from - 1, to - 1), this.personList.length)
+            const from = this.activeRange * (this.activePage - 1),
+                to = from + this.activeRange
+
+            console.log(from, to)
+            callback(false, this.personList.slice(from, to))
         } catch (error) {
-            callback(error, [], 0)
+            callback(error, [])
         }
 
+    }
+
+    calcPages_(amount, range) {
+        return !(amount % range) ? amount / range : Math.floor( amount / range ) + 1;
+    }
+
+    getRanges(callback) {
+        callback(this.ranges, this.activeRange);
+    }
+
+    setActiveRange(range) {
+        this.activeRange = range
+        this.activePage = 1
+    }
+
+    getPage(callback) {
+        callback(this.pages, this.activePage)
+    }
+
+    setPage(page) {
+        this.activePage = page
     }
 }

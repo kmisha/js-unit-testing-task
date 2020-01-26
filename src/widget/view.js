@@ -42,8 +42,7 @@ export default class View {
         return 'hidden';
     }
 
-    constructor(container, controller, range) {
-        this.container = container;
+    constructor(container, controller, ) {
         this.sortSelector = container.querySelector('.sorting');
         this.viewList = container.querySelector('.view-list');
         this.ranges = container.querySelector('.ranges');
@@ -51,19 +50,17 @@ export default class View {
         this.modalOverlay = container.querySelector('.modal-overlay');
         this.modal = container.querySelector('.full-info');
         this.controller = controller
-        this.range = range
-        this.activeRangeNumber = range[0]
-        this.activePageNumber = 1
+
         this.init()
     }
 
     init() {
-        const range = this.showRanges_(this.range, this.controller)
-        this.controller.showListEvent(1, range + 1, (...args) => this.showList_(...args))
+        this.controller.getRangesEvent((ranges, active) => this.showRanges_(ranges, active))
+        this.controller.showListEvent((error, list) => this.showList_(error, list))
         this.setSortSelector_()
     }
 
-    showList_(error, personList, amountOfPersons) {
+    showList_(error, personList) {
         if (error) {
             // show error page
             // this.showErrorPage()
@@ -89,77 +86,53 @@ export default class View {
             this.viewList.appendChild(li);
         });
 
-        this.showPages_(amountOfPersons, this.activeRangeNumber, this.controller)
+        this.controller.getPageEvent((pages, active) => this.showPages_(pages, active))
     }
 
-    showRanges_(ranges, controller) {
-        ranges.forEach((range, index) => {
+    showRanges_(ranges, active) {
+        if (this.ranges.children.length > 0) {
+            removeChildren(this.ranges);
+        }
+
+        ranges.forEach(range => {
             const li = document.createElement('li'),
                 link = document.createElement('a')
 
-            if (!index) {
+            if (range === active) {
                 link.classList.add('active')
-                this.activeRange = link
             }
 
             link.innerText = range
-            link.addEventListener('click', event => {
-                this.setRangeActive_(event.currentTarget, range)
-                controller.rangeEvent(range, (...args) => this.showList_(...args))
+            link.addEventListener('click', () => {
+                this.controller.setActiveRangeEvent(range, (ranges, active) => this.showRanges_(ranges, active))
+                this.controller.showListEvent((error, list) => this.showList_(error, list))
             })
             li.appendChild(link);
             this.ranges.appendChild(li);
         });
-        // return default range
-        return ranges[0];
     }
 
-    showPages_(amount, rangeNumer, controller) {
+    showPages_(amount, active) {
         if (this.pages.children.length > 0) {
             removeChildren(this.pages);
         }
 
-        const count = this.calcPages_(amount, rangeNumer)
-
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < amount; i++) {
             const li = document.createElement('li'),
                 link = document.createElement('a')
 
-            if (this.activePageNumber === i + 1) {
+            if (active === i + 1) {
                 link.classList.add('active');
-                this.activePage = link;
             }
 
             link.innerText = i + 1;
             link.addEventListener('click', event => {
-                this.setPageActive_(event.currentTarget, i + 1)
-                controller.pageEvent(i + 1, this.activeRangeNumber,  (...args) => this.showList_(...args))
+                this.controller.setPageEvent(i + 1, (amount, active) => this.showPages_(amount, active))
+                this.controller.showListEvent((error, list) => this.showList_(error, list))
             });
             li.appendChild(link);
             this.pages.appendChild(li);
         }
-        // return default page
-        return 0;
-    }
-
-    calcPages_(amount, range) {
-        return !(amount % range) ? amount / range : Math.floor( amount / range ) + 1;
-    }
-
-    setRangeActive_(element, range) {
-        this.activeRange.classList.remove('active')
-        this.activeRange = element
-        this.activeRangeNumber = range
-        this.activeRange.classList.add('active')
-        // drop activePageNumber
-        this.activePageNumber = 1
-    }
-
-    setPageActive_(element, page) {
-        this.activePage.classList.remove('active')
-        this.activePage = element
-        this.activePageNumber = page
-        this.activePage.classList.add('active')
     }
 
     // modal view
@@ -186,6 +159,6 @@ export default class View {
     }
 
     setSortSelector_() {
-        this.sortSelector.addEventListener('change', (event) => this.controller.sortEvent(event, this.activePageNumber, this.activeRangeNumber, (...args) => this.showList_(...args)))
+        this.sortSelector.addEventListener('change', event => this.controller.sortEvent(event, (error, list) => this.showList_(error, list)))
     }
 }

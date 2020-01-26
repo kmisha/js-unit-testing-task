@@ -1,7 +1,7 @@
 import Controller from "./controller.js";
 
 describe('Controller', () => {
-    let model = jasmine.createSpyObj('Model', ['updateData', 'sort', 'reverse', 'getPersons']),
+    let model = jasmine.createSpyObj('Model', ['updateData', 'sort', 'reverse', 'getPersons', 'getRanges', 'setActiveRange', 'getPage', 'setPage']),
         controller, callbackSpy
 
     beforeEach(() => {
@@ -50,33 +50,59 @@ describe('Controller', () => {
                 }
             }
 
-            controller.sortEvent(event, 1, 2, callbackSpy)
+            controller.sortEvent(event, callbackSpy)
 
-            expect(model.getPersons).toHaveBeenCalledWith(1, 3, callbackSpy)
+            expect(model.getPersons).toHaveBeenCalledWith(callbackSpy)
         })
     })
 
-    describe('when fired rangeEvent', () => {
+    describe('when fired getRangeEvent', () => {
+
+        beforeEach(() => {
+            callbackSpy = jasmine.createSpy('callback spy')
+        })
+
+        it('should call the getRanges method with correct argument', () => {
+            controller.getRangesEvent(callbackSpy)
+            expect(model.getRanges).toHaveBeenCalledWith(callbackSpy)
+        })
+    })
+
+    describe('when fired setActiveRangeEvent', () => {
+
+        beforeEach(() => {
+            callbackSpy = jasmine.createSpy('callback spy')
+        })
+
+        it('should call the setActiveRanges method with correct argument', () => {
+            controller.setActiveRangeEvent(10, callbackSpy)
+            expect(model.getRanges).toHaveBeenCalledWith(callbackSpy)
+            expect(model.setActiveRange).toHaveBeenCalledWith(10)
+        })
+    })
+
+    describe('when fired getPageEvent', () => {
 
         beforeEach(() => {
             callbackSpy = jasmine.createSpy('callback spy')
         })
 
         it('should call the getPersons method with correct arguments', () => {
-            controller.rangeEvent(10, callbackSpy)
-            expect(model.getPersons).toHaveBeenCalledWith(1, 11, callbackSpy)
+            controller.getPageEvent(callbackSpy)
+            expect(model.getPage).toHaveBeenCalledWith(callbackSpy)
         })
     })
 
-    describe('when fired pageEvent', () => {
+    describe('when fired setPageEvent', () => {
 
         beforeEach(() => {
             callbackSpy = jasmine.createSpy('callback spy')
         })
 
-        it('should call the getPersons method with correct arguments', () => {
-            controller.pageEvent(10, 2, callbackSpy)
-            expect(model.getPersons).toHaveBeenCalledWith(19, 21, callbackSpy)
+        it('should call the setPage method with correct arguments', () => {
+            controller.setPageEvent(10, callbackSpy)
+            expect(model.getPage).toHaveBeenCalledWith(callbackSpy)
+            expect(model.setPage).toHaveBeenCalledWith(10)
         })
     })
 
@@ -87,8 +113,8 @@ describe('Controller', () => {
         })
 
         it('should call the getPersons method with correct arguments', () => {
-            controller.showListEvent(10, 12, callbackSpy)
-            expect(model.getPersons).toHaveBeenCalledWith(10, 12, callbackSpy)
+            controller.showListEvent(callbackSpy)
+            expect(model.getPersons).toHaveBeenCalledWith( callbackSpy)
         })
     })
 });

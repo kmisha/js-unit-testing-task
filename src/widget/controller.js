@@ -3,8 +3,7 @@ export default class Controller{
         this.model = model
     }
 
-    // select list sorting
-    sortEvent(event, page, range, callback) {
+    sortEvent(event, callback) {
         switch( event.currentTarget.value ) {
             case 'normal' :
                 this.model.sort();
@@ -13,23 +12,28 @@ export default class Controller{
                 this.model.reverse();
                 break;
         }
-
-        const from = (page - 1) * range + 1
-        const to = from + range
-        this.model.getPersons(from, to, callback)
+        this.model.getPersons(callback)
     }
 
-    rangeEvent(range, callback) {
-        this.model.getPersons(1, range + 1, callback)
+    getPageEvent(callback) {
+        this.model.getPage(callback)
     }
 
-    pageEvent(page, range,  callback) {
-        const from = (page - 1) * range + 1
-        const to = from + range
-        this.model.getPersons(from, to, callback)
+    setPageEvent(page, callback) {
+        this.model.setPage(page)
+        this.getPageEvent(callback)
     }
 
-    showListEvent(from, to, callback) {
-        this.model.getPersons(from, to, callback);
+    showListEvent(callback) {
+        this.model.getPersons(callback);
+    }
+
+    getRangesEvent(callback) {
+        this.model.getRanges(callback)
+    }
+
+    setActiveRangeEvent(range, callback) {
+        this.model.setActiveRange(range)
+        this.getRangesEvent(callback)
     }
 }

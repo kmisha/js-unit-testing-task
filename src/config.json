@@ -8,5 +8,6 @@
         "gender"   : "",
         "password" : "",
         "inc"      : "gender,name,location,email,phone,picture"
-    }
+    },
+    "ranges": [10, 15, 20]
 }
