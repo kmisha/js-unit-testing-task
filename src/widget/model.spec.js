@@ -120,7 +120,7 @@ describe('Model method getPersons', () => {
 
         await model.getPersons(2, 4, callback)
 
-        expect(callback).toHaveBeenCalledWith(false, expected)
+        expect(callback).toHaveBeenCalledWith(false, expected, model.personList.length)
     })
 
     it('should call callback with correct data also if model list is empty', (done) => {
@@ -130,7 +130,7 @@ describe('Model method getPersons', () => {
         ]
 
         model.getPersons(2, 4, callback)
-            .then(() => expect(callback).toHaveBeenCalledWith(false, expected))
+            .then(() => expect(callback).toHaveBeenCalledWith(false, expected, 5))
             .catch(errorSpy)
             .finally(() => {
                 expect(errorSpy).not.toHaveBeenCalled()
@@ -155,7 +155,7 @@ describe('Model method getPersons', () => {
         model.getPersons(2, 4, callback)
             .then(() => done())
             .finally(() => {
-            expect(callback).toHaveBeenCalledWith('error', []);
+            expect(callback).toHaveBeenCalledWith('error', [], 0);
         })
 
         jasmine.Ajax.requests.mostRecent().responseError('error')
@@ -164,16 +164,16 @@ describe('Model method getPersons', () => {
     it('should call callback with [] from or to params is incorrect', async () => {
         model.personList = [{a: 1}]
         await model.getPersons(-2, 4, callback)
-        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [], 0)
 
         await model.getPersons(2, -4, callback)
-        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [], 0)
 
         await model.getPersons(10, 4, callback)
-        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [])
+        expect(callback).toHaveBeenCalledWith(new TypeError('from and to should be more than 1 and to < from'), [], 0)
 
-        await model.getPersons(1, 1, callback)
-        expect(callback).toHaveBeenCalledWith(false, [])
+        await model.getPersons(1, 2, callback)
+        expect(callback).toHaveBeenCalledWith(false, [{a: 1}], 1)
     })
 });
 
