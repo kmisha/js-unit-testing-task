@@ -45,19 +45,21 @@ export default class Model {
     }
 
     async getPersons(from, to, callback) {
+
         try {
 
             if (from < 1 || to < 1 || to < from) {
-                callback(new TypeError('from and to should be more than 1 and to < from'), [])
+                callback(new TypeError('from and to should be more than 1 and to < from'), [], 0)
             }
 
             if (!this.personList.length) {
                 this.personList = await this.updateData()
+                this.sort()
             }
 
-            callback(false, this.personList.slice(from - 1, to - 1))
+            callback(false, this.personList.slice(from - 1, to - 1), this.personList.length)
         } catch (error) {
-            callback(error, [])
+            callback(error, [], 0)
         }
 
     }

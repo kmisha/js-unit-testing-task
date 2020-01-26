@@ -1,69 +1,35 @@
 export default class Controller{
-    constructor(view, list) {
-        this.view = view;
-        this.list = list;
-        this.page = 1;
+    constructor(model) {
+        this.model = model
     }
-    // update view
-    update(page) {
-        const first = page * this.list.range,
-            last = first + this.list.range;
-        const users = this.list.getPersons(first, last);
-        this.view.showList(users);
-    }
+
     // select list sorting
-    sort(event) {
+    sortEvent(event, page, range, callback) {
         switch( event.currentTarget.value ) {
             case 'normal' :
-                this.list.sort();
+                this.model.sort();
                 break;
             case 'reverse' :
-                this.list.reverse();
+                this.model.reverse();
                 break;
         }
-        this.update(this.page)
+
+        const from = (page - 1) * range + 1
+        const to = from + range
+        this.model.getPersons(from, to, callback)
     }
 
-    setRanges(arr) {
-        this.list.range = this.view.showRanges(arr, this);
-        this.list.page  = this.view.showPages(this.calcPages(), this);
+    rangeEvent(range, callback) {
+        this.model.getPersons(1, range + 1, callback)
     }
 
-    setRangeEvent(range, event) {
-        this.list.range = range;
-        this.view.setRangeActive(event.currentTarget);
-        this.list.page = this.view.showPages(this.calcPages(), this);
-        this.update(this.list.page, range);
+    pageEvent(page, range,  callback) {
+        const from = (page - 1) * range + 1
+        const to = from + range
+        this.model.getPersons(from, to, callback)
     }
 
-    setPageEvent(page, event) {
-        this.list.page = page;
-        this.view.setPageActive(event.currentTarget);
-        this.update();
-    }
-
-    calcPages() {
-        const personCount = this.list.personList.length,
-              range       = this.list.range;
-        return !(personCount % range) ? personCount / range : Math.floor( personCount / range ) + 1;
-    }
-
-    compile(ranges) {
-        return this.list.updateData()
-            .then( result => {
-                this.list.personList = result;
-                this.list.sort();
-                this.setRanges(ranges);
-                this.update(1);
-                this.view.setSortSelector();
-            })
-            .catch( () => {
-                this.list.personList = [];
-                // TODO Show Error
-            });
-    }
-
-    async showList(from, to, callback) {
-        await this.model.showList(from, to, callback);
+    showListEvent(from, to, callback) {
+        this.model.getPersons(from, to, callback);
     }
 }

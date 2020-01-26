@@ -36,22 +36,13 @@ function addElement(container, element, attr, content) {
 }
 
 export default class View {
-    // click event
-    static get CLICK() {
-        return 'click';
-    }
-
-    // active css class
-    static get ACTIVE() {
-        return 'active';
-    }
 
     // hidden css class
     static get HIDDEN() {
         return 'hidden';
     }
 
-    constructor(container, controller) {
+    constructor(container, controller, range) {
         this.container = container;
         this.sortSelector = container.querySelector('.sorting');
         this.viewList = container.querySelector('.view-list');
@@ -59,91 +50,123 @@ export default class View {
         this.pages = container.querySelector('.pages');
         this.modalOverlay = container.querySelector('.modal-overlay');
         this.modal = container.querySelector('.full-info');
-        this.controller = controller;
+        this.controller = controller
+        this.range = range
+        this.activeRangeNumber = range[0]
+        this.activePageNumber = 1
+        this.init()
     }
 
-    async init() {
-        await this.controller.showList(from, to, list => this.showList(list));
+    init() {
+        const range = this.showRanges_(this.range, this.controller)
+        this.controller.showListEvent(1, range + 1, (...args) => this.showList_(...args))
+        this.setSortSelector_()
     }
 
-    showList(personList) {
+    showList_(error, personList, amountOfPersons) {
+        if (error) {
+            // show error page
+            // this.showErrorPage()
+        }
 
         if (this.viewList.children.length > 0) {
             removeChildren(this.viewList);
         }
 
-        personList.forEach((person) => {
+        personList.forEach(person => {
             const li = document.createElement('li'),
                 img = document.createElement('img'),
-                pName = document.createElement('p');
+                name = document.createElement('p')
+
             img.src = person.picture.thumbnail;
             const {title, first, last} = person.name;
-            pName.innerText = `${sentenceCase(title)}. ${sentenceCase(first)} ${sentenceCase(last)}`;
+            name.innerText = `${sentenceCase(title)}. ${sentenceCase(first)} ${sentenceCase(last)}`;
             li.appendChild(img);
-            li.appendChild(pName);
+            li.appendChild(name);
 
-            li.addEventListener(View.CLICK, (event) => this.showFullInfo(person, event));
+            li.addEventListener('click', event => this.showFullInfo_(person, event));
 
             this.viewList.appendChild(li);
         });
+
+        this.showPages_(amountOfPersons, this.activeRangeNumber, this.controller)
     }
 
-    showRanges(ranges, controller) {
+    showRanges_(ranges, controller) {
         ranges.forEach((range, index) => {
             const li = document.createElement('li'),
-                a = document.createElement('a');
+                link = document.createElement('a')
+
             if (!index) {
-                a.classList.add(View.ACTIVE);
-                this.activeRange = a;
+                link.classList.add('active')
+                this.activeRange = link
             }
-            a.innerText = range;
-            a.addEventListener(View.CLICK, event => controller.setRangeEvent(range, event));
-            li.appendChild(a);
+
+            link.innerText = range
+            link.addEventListener('click', event => {
+                this.setRangeActive_(event.currentTarget, range)
+                controller.rangeEvent(range, (...args) => this.showList_(...args))
+            })
+            li.appendChild(link);
             this.ranges.appendChild(li);
         });
         // return default range
         return ranges[0];
     }
 
-    setRangeActive(element) {
-        this.activeRange.classList.remove(View.ACTIVE);
-        this.activeRange = element;
-        this.activeRange.classList.add(View.ACTIVE);
-    }
-
-    showPages(pageCount, controller) {
-
+    showPages_(amount, rangeNumer, controller) {
         if (this.pages.children.length > 0) {
             removeChildren(this.pages);
         }
 
-        for (let i = 0; i < pageCount; i++) {
+        const count = this.calcPages_(amount, rangeNumer)
+
+        for (let i = 0; i < count; i++) {
             const li = document.createElement('li'),
-                a = document.createElement('a');
-            if (i === 0) {
-                a.classList.add(View.ACTIVE);
-                this.activePage = a;
+                link = document.createElement('a')
+
+            if (this.activePageNumber === i + 1) {
+                link.classList.add('active');
+                this.activePage = link;
             }
-            a.innerText = i + 1;
-            a.addEventListener(View.CLICK, event => controller.setPageEvent(i, event));
-            li.appendChild(a);
+
+            link.innerText = i + 1;
+            link.addEventListener('click', event => {
+                this.setPageActive_(event.currentTarget, i + 1)
+                controller.pageEvent(i + 1, this.activeRangeNumber,  (...args) => this.showList_(...args))
+            });
+            li.appendChild(link);
             this.pages.appendChild(li);
         }
         // return default page
         return 0;
     }
 
-    setPageActive(element) {
-        this.activePage.classList.remove(View.ACTIVE);
-        this.activePage = element;
-        this.activePage.classList.add(View.ACTIVE);
+    calcPages_(amount, range) {
+        return !(amount % range) ? amount / range : Math.floor( amount / range ) + 1;
+    }
+
+    setRangeActive_(element, range) {
+        this.activeRange.classList.remove('active')
+        this.activeRange = element
+        this.activeRangeNumber = range
+        this.activeRange.classList.add('active')
+        // drop activePageNumber
+        this.activePageNumber = 1
+    }
+
+    setPageActive_(element, page) {
+        this.activePage.classList.remove('active')
+        this.activePage = element
+        this.activePageNumber = page
+        this.activePage.classList.add('active')
     }
 
     // modal view
-    showFullInfo(person) {
+    showFullInfo_(person) {
         const over = this.modalOverlay;
         over.classList.remove(View.HIDDEN);
-        over.addEventListener(View.CLICK, () => over.classList.add(View.HIDDEN));
+        over.addEventListener('click', () => over.classList.add(View.HIDDEN));
         // show modal window
         const modal = this.modal;
 
@@ -162,7 +185,7 @@ export default class View {
 
     }
 
-    setSortSelector() {
-        this.sortSelector.addEventListener('change', (event) => this.sort(event));
+    setSortSelector_() {
+        this.sortSelector.addEventListener('change', (event) => this.controller.sortEvent(event, this.activePageNumber, this.activeRangeNumber, (...args) => this.showList_(...args)))
     }
 }
