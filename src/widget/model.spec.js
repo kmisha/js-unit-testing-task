@@ -177,7 +177,7 @@ describe('Model method getPersons', () => {
     })
 });
 
-xdescribe('Model method reverse', () => {
+describe('Model method reverse', () => {
     let config = {
         proto: 'http',
         url: 'yandex.ru'
@@ -205,77 +205,6 @@ xdescribe('Model method reverse', () => {
         ];
 
         person.reverse();
-
-        expect(person.personList).toEqual(expected);
-    })
-});
-
-xdescribe('Model method reverse', () => {
-    let config = {
-        proto: 'http',
-        url: 'yandex.ru'
-    };
-    let person;
-
-    beforeEach(() => {
-        person = new Model(config, {});
-    });
-
-    it('should reverse', () => {
-        person.personList = [
-            {
-                name: {
-                    first: 'Person4',
-                    last: 'Last name 1'
-                }
-            },
-            {
-                name: {
-                    first: 'Person3',
-                    last: 'Last name 2'
-                }
-            },
-            {
-                name: {
-                    first: 'Person2',
-                    last: 'Last name 3'
-                }
-            },
-            {
-                name: {
-                    first: 'Person1',
-                    last: 'Last name 4'
-                }
-            },
-        ];
-        const expected = [
-            {
-                name: {
-                    first: 'Person1',
-                    last: 'Last name 4'
-                }
-            },
-            {
-                name: {
-                    first: 'Person2',
-                    last: 'Last name 3'
-                }
-            },
-            {
-                name: {
-                    first: 'Person3',
-                    last: 'Last name 2'
-                }
-            },
-            {
-                name: {
-                    first: 'Person4',
-                    last: 'Last name 1'
-                }
-            },
-        ];
-
-        person.sort();
 
         expect(person.personList).toEqual(expected);
     })
