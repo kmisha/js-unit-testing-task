@@ -60,7 +60,6 @@ export default class Model {
             const from = this.activeRange * (this.activePage - 1),
                 to = from + this.activeRange
 
-            console.log(from, to)
             callback(false, this.personList.slice(from, to))
         } catch (error) {
             callback(error, [])
