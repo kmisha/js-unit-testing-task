@@ -1,5 +1,4 @@
-// console.log(new Ball().getDescription()) // 'ball'
-// console.log(new RedBallDecorator().getDescription ()) // 'red ball with lines'
+
 import {Ball, RedBallDecorator, BallWithLinesDecorator} from './decorator-task.js'
 
 describe('when you', () => {
