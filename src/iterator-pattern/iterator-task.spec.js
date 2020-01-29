@@ -1,4 +1,5 @@
 import {ArrayIterator} from './iterator-task.js';
+import {ObservableArray} from "./observable-array";
 
 describe('ArrayIterator', () => {
     let config, iterator
@@ -73,4 +74,48 @@ describe('ArrayIterator', () => {
     })
 
 
+})
+
+describe('ObservableArray', () => {
+    let array
+
+    it('should create correct object', () => {
+        array = new ObservableArray()
+        expect(array).toBeDefined()
+        array = new ObservableArray(6)
+        expect(array.length).toBe(6)
+        array = new ObservableArray(6, 5, 4, 3)
+        expect(array.length).toEqual([6, 5, 4, 3])
+        expect(typeof array.on).toBe('function')
+        expect(typeof array.emit_).toBe('function')
+    })
+
+    it('should be observable', (done) => {
+        const spy = value => {
+            expect(value).toBe(1, 2, 3, 4)
+            done()
+        }
+
+        array = new ObservableArray(1, 2, 3)
+        array.on(spy)
+
+        array.push(4)
+    })
+})
+
+describe('If array for ArrayIterator if observable', () => {
+    let array, iterator, config
+
+    beforeEach(() => {
+        config = { cyclic: true, width: 3}
+        array = new ObservableArray(1, 2, 3, 4)
+        iterator = new ArrayIterator(array, config)
+    })
+
+    it('should react to array modification', () => {
+        expect(iterator.jumpTo(3)).toBeUndefined()
+        expect(iterator.current()).toEqual([3, 4, 1])
+        array.push(1, 2, 3, 4, 5)
+        expect(iterator.current()).toEqual([3, 4, 5])
+    })
 })

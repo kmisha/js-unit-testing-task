@@ -1,6 +1,13 @@
+import {ObservableArray} from './observable-array.js';
+
 export class ArrayIterator{
     constructor(array, config) {
-        this.array = array || []
+        if (array instanceof ObservableArray) {
+            this.array = array
+            array.on(value => this.array = value)
+        } else {
+            this.array = array || []
+        }
         this.circular = config.cyclic || false
         this.step = 1
         this.width = config.width || 1
